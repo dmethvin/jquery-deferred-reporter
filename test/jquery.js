@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v3.0.0-pre 1823a715660a5f31dd7e05672e9ad020066256a9
+ * jQuery JavaScript Library v3.0.0-pre
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2015-12-03T13:55Z
+ * Date: 2015-12-23T00:14Z
  */
 
 (function( global, factory ) {
@@ -74,7 +74,7 @@ var support = {};
 
 
 var
-	version = "3.0.0-pre 1823a715660a5f31dd7e05672e9ad020066256a9",
+	version = "3.0.0-pre",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -3458,12 +3458,17 @@ jQuery.extend( {
 											mightThrow();
 										} catch ( e ) {
 
+											if ( jQuery.Deferred.exceptionHook ) {
+												jQuery.Deferred.exceptionHook( e,
+													process.stackTrace );
+											}
+
 											// Support: Promises/A+ section 2.3.3.3.4.1
 											// https://promisesaplus.com/#point-61
 											// Ignore post-resolution exceptions
 											if ( depth + 1 >= maxDepth ) {
 
-												// Only substitue handlers pass on context
+												// Only substitute handlers pass on context
 												// and multiple values (non-spec behavior)
 												if ( handler !== Thrower ) {
 													that = undefined;
@@ -3483,6 +3488,12 @@ jQuery.extend( {
 							if ( depth ) {
 								process();
 							} else {
+
+								// Call an optional hook to record the stack, in case of exception
+								// since it's otherwise lost when execution goes async
+								if ( jQuery.Deferred.getStackHook ) {
+									process.stackTrace = jQuery.Deferred.getStackHook();
+								}
 								window.setTimeout( process );
 							}
 						};
@@ -3659,6 +3670,28 @@ jQuery.extend( {
 		return master.promise();
 	}
 } );
+
+
+// These usually indicate a programmer mistake during development,
+// warn about them ASAP rather than swallowing them by default.
+var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
+
+jQuery.Deferred.exceptionHook = function( error ) {
+
+	// Support: IE9
+	// Console exists when dev tools are open, which can happen at any time
+	var stack,
+		warn = window.console && window.console.warn;
+
+	if ( warn && error && rerrorNames.test( error.name ) ) {
+		if ( jQuery.Deferred.getStackHook ) {
+			stack = jQuery.Deferred.getStackHook();
+		}
+		warn.call( window.console, "jQuery.Deferred exception: " + error.message, stack );
+	}
+};
+
+
 
 
 // The deferred used on DOM ready

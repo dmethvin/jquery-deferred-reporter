@@ -10,7 +10,7 @@
 
 }( function() {
 
-	function makeStackTrace() {
+	function getStackHook() {
 
 		// Throw an error so we can extract the stack from the Error
 		try {
@@ -19,6 +19,6 @@
 			return err.stack;
 		}
 	}
-	return jQuery.Deferred.stackTraceHook = makeStackTrace;
+	return jQuery.Deferred.getStackHook = getStackHook;
 
 } ) );
