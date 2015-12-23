@@ -1,0 +1,5 @@
+{
+	"preset": "jquery",
+	"requireCapitalizedComments": null,
+	"excludeFiles": [ "dist", "node_modules" ]
+}
