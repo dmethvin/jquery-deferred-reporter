@@ -14,7 +14,7 @@
 
 		// Throw an error so we can extract the stack from the Error
 		try {
-			throw new Error();
+			throw new Error( "Exception in jQuery.Deferred" );
 		} catch ( err ) {
 			return err.stack;
 		}
