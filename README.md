@@ -8,3 +8,8 @@ Prior to jQuery 3.0, Deferreds would simply terminate and the browser would gene
 
 The native `Promise` object as implemented in the browser tracks Promise rejections and report problems on the console. However, doing the same type of reporting in the JavaScript world is much more difficult. jQuery itself is unable to use the native Promise because jQuery.Deferred implements a superset of Promise that requires additional features, and because Promise is not implemented on all the platforms that jQuery supports.
 
+## Why not just put this in jQuery?
+
+ Since it has to save the stack trace regardless of whether an exception will happen or not, adding this plugin makes `jQuery.Deferred` [significantly slower](https://jsfiddle.net/h20r0e6z/), by roughly a factor of two.
+ 
+
