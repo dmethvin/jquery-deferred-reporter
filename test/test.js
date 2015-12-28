@@ -46,7 +46,7 @@ function exceptionHookWithStack( assert ) {
 
 	window.console.warn = function( msg, stack ) {
 		assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
-		assert.ok( /jQuery\.Deferred/.test( stack ), "Stack trace included: \n" + stack );
+		assert.ok( /exceptionHookWithStack/.test( stack ), "Stack trace included: \n" + stack );
 	};
 	defer.then( function() {
 		jQuery.cough_up_hairball();
