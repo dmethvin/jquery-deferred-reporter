@@ -1,14 +1,14 @@
 ( function( factory ) {
 
     if ( typeof define === "function" && define.amd ) {
-        define( "jquery-deferred-reporter", [], factory );
-    } else if ( typeof exports === "object" ) {
-        module.exports = factory();
+        define( "jquery-deferred-reporter", [ "jquery" ], factory );
+    } else if ( typeof module === "object" && module.exports ) {
+        module.exports = factory( require( "jquery" ) );
     } else {
-        factory();
+        factory( jQuery );
     }
 
-}( function() {
+}( function( jQuery ) {
 
 	function getStackHook() {
 
