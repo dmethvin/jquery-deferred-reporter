@@ -10,6 +10,6 @@ The native `Promise` object as implemented in the browser tracks Promise rejecti
 
 ## Why not just put this in jQuery?
 
- Since it has to save the stack trace regardless of whether an exception will happen or not, adding this plugin makes `jQuery.Deferred` [significantly slower](https://jsfiddle.net/h20r0e6z/3/), by roughly a factor of two.
+ Since it has to save the stack trace regardless of whether an exception will happen or not, adding this plugin makes `jQuery.Deferred` [significantly slower](https://jsfiddle.net/h20r0e6z/5/), by roughly a factor of two.
  
 
