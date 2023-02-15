@@ -1,10 +1,16 @@
+"use strict";
 
-QUnit.test( "Sanity", function( assert ) {
+// Polyfill `globalThis` for legacy browsers.
+if ( typeof globalThis === "undefined" ) {
+	window.globalThis = window;
+}
+
+QUnit.test( "Environment check", function( assert ) {
 	assert.expect( 1 );
-	assert.ok( Array.prototype.push, "Array.push()" );
+	assert.ok( Array.prototype.push, "Array#push()" );
 } );
 
-QUnit[ window.console ? "test" : "skip" ](
+QUnit[ globalThis.console ? "test" : "skip" ](
 "jQuery.Deferred.exceptionHook",
 function exceptionHookTest( assert ) {
 
@@ -12,29 +18,39 @@ function exceptionHookTest( assert ) {
 
 	var done = assert.async(),
 		defer = jQuery.Deferred(),
-		oldWarn = window.console.warn;
+		oldWarn = globalThis.console.warn;
 
-	window.console.warn = function( msg ) {
-		assert.ok( /barf/.test( msg ), "Message: " + msg );
-	};
+	if ( jQuery.fn.jquery.indexOf( "3." ) === 0 ) {
+		globalThis.console.warn = function( msg ) {
+			assert.ok( /barf/.test( msg ), "Message: " + msg );
+		};
+	} else {
+		globalThis.console.warn = function( _intro, error ) {
+			assert.ok( /barf/.test( error.message + "\n" + error.stack ),
+				"Error mentions the method: " + error.message + "\n" + error.stack );
+		};
+	}
+
 	jQuery.when(
 		defer.then( function() {
+
 			// Should get an error
 			jQuery.barf();
 		} ).then( null, jQuery.noop ),
 		defer.then( function() {
+
 			// Should NOT get an error
 			throw new Error( "Make me a sandwich" );
 		} ).then( null, jQuery.noop )
 	).then( function( ) {
-		window.console.warn = oldWarn;
+		globalThis.console.warn = oldWarn;
 		done();
 	} );
 
 	defer.resolve();
 } );
 
-QUnit[ window.console ? "test" : "skip" ](
+QUnit[ globalThis.console ? "test" : "skip" ](
 "jQuery.Deferred.exceptionHook with stack hooks",
 function exceptionHookWithStack( assert ) {
 
@@ -42,16 +58,24 @@ function exceptionHookWithStack( assert ) {
 
 	var done = assert.async(),
 		defer = jQuery.Deferred(),
-		oldWarn = window.console.warn;
+		oldWarn = globalThis.console.warn;
 
-	window.console.warn = function( msg, stack ) {
-		assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
-		assert.ok( /exceptionHookWithStack/.test( stack ), "Stack trace included: \n" + stack );
+	globalThis.console.warn = function( intro, error, asyncError ) {
+		assert.ok(
+			/cough_up_hairball/.test( intro + "\n" + ( error && error.message || error ) ),
+			"Function mentioned: " + intro + "\n" + ( error && error.message || error )
+		);
+
+		assert.ok(
+			/exceptionHookWithStack/.test( asyncError.message + "\n" + asyncError.stack ),
+			"Stack trace included: " + asyncError.message + "\n" + asyncError.stack
+		);
 	};
+
 	defer.then( function() {
 		jQuery.cough_up_hairball();
 	} ).then( null, function( ) {
-		window.console.warn = oldWarn;
+		globalThis.console.warn = oldWarn;
 		delete jQuery.Deferred.getStackHook;
 		done();
 	} );
