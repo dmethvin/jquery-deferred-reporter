@@ -1,6 +1,6 @@
 # jquery-deferred-reporter
 
-This jQuery plugin extends the `jQuery.Deferred` features added in version 3.0 to include a stack trace whenever a Deferred throws an exception. This makes it easier to find programming errors that occur inside Deferreds. 
+This jQuery plugin extends the `jQuery.Deferred` features added in version 3.0 to include an error captured before the async barrier whenever a Deferred throws an exception. This makes it easier to find programming errors that occur inside Deferreds. 
 
 ## Why does this plugin exist?
 
@@ -10,6 +10,4 @@ The native `Promise` object as implemented in the browser tracks Promise rejecti
 
 ## Why not just put this in jQuery?
 
- Since it has to save the stack trace regardless of whether an exception will happen or not, adding this plugin makes `jQuery.Deferred` [significantly slower](https://jsfiddle.net/h20r0e6z/5/), by roughly a factor of two.
- 
-
+ Since it has to save the error regardless of whether an exception will happen or not, adding this plugin makes `jQuery.Deferred` [significantly slower](https://jsfiddle.net/h20r0e6z/5/), by roughly a factor of two.

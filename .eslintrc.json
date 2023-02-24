@@ -1,0 +1,38 @@
+{
+	"root": true,
+
+	"overrides": [
+		{
+			"files": "src/**/*.js",
+			"extends": "./.eslintrc-browser.json",
+			"globals": {
+				"define": false,
+				"module": false,
+				"require": false,
+				"jQuery": false
+			}
+		},
+		
+		{
+			"files": "test/node-setup.js",
+			"extends": "./.eslintrc-node.json"
+		},
+
+		{
+			"files": "test/test.js",
+			"extends": "./.eslintrc-browser.json",
+			"env": {
+				"browser": false,
+				"node": false
+			},
+			"globals": {
+				"globalThis": false,
+				"QUnit": false,
+				"jQuery": false
+			},
+			"rules": {
+				"strict": [ "error", "global" ]
+			}
+		}
+	]
+}
