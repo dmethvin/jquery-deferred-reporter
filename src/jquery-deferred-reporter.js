@@ -25,6 +25,19 @@
 
 	// Define both `jQuery.Deferred.getErrorHook` used in jQuery >=3.7.0
 	// and `jQuery.Deferred.getStackHook` used in jQuery <4.0.0.
-	return jQuery.Deferred.getStackHook = jQuery.Deferred.getErrorHook = getErrorHook;
+	var version = jQuery.fn.jquery
+		.split( "." )
+		.map( function( v ) {
+			return Number( v );
+		} );
+
+	// Only assign to the newer API if supported to avoid jQuery Migrate warnings.
+	if ( version[ 0 ] >= 4 || ( version[ 0 ] === 3 && version[ 1 ] >= 7 ) ) {
+		jQuery.Deferred.getErrorHook = getErrorHook;
+	} else {
+		jQuery.Deferred.getStackHook = getErrorHook;
+	}
+
+	return getErrorHook;
 
 } );

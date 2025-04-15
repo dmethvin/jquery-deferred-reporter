@@ -7,8 +7,11 @@
 	<link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css" />
 	<script src="../node_modules/qunit/qunit/qunit.js"></script>
 
-	<script src="../node_modules/jquery/dist/jquery.js"></script>
-	<script src="../dist/jquery-deferred-reporter.js"></script>
+	<script src="testinit.js"></script>
+	<script>
+		TestManager.loadProject( "jquery", "git.min" );
+	</script>
+	<script src="../src/jquery-deferred-reporter.js"></script>
 
 	<script src="test.js"></script>
 </head>

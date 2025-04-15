@@ -4,12 +4,16 @@
   "description": "Report stack from jQuery.Deferred exceptions on the console",
   "author": "Dave Methvin",
   "license": "MIT",
-  "main": "dist/jquery-deferred-reporter.js",
+  "main": "src/jquery-deferred-reporter.js",
   "scripts": {
     "lint": "eslint .",
-    "build": "mkdir -p dist && cp src/reporter.js dist/jquery-deferred-reporter.js",
-    "unit-tests": "qunit --require ./test/node-setup.js ./test/test.js",
-    "test": "npm run lint && npm run build && npm run unit-tests"
+    "test:browser": "npm run test:unit -- -b chrome -b firefox --headless",
+    "test:ie": "npm run test:unit -- -v -b ie",
+    "test:node": "qunit --require ./test/node-setup.js ./test/test.js",
+    "test:safari": "npm run test:unit -- -v -b safari",
+    "test:server": "jtr serve",
+    "test:unit": "jtr",
+    "test": "npm run lint && npm run test:node && npm run test:browser"
   },
   "repository": {
     "type": "git",
@@ -18,11 +22,15 @@
   "devDependencies": {
     "eslint": "8.34.0",
     "eslint-config-jquery": "3.0.0",
-    "jquery": "3.6.3",
-    "jsdom": "21.1.0",
-    "qunit": "2.19.4"
+    "jquery": "npm:jquery@3.7.1",
+    "jquery-test-runner": "^0.2.6",
+    "jsdom": "26.1.0",
+    "module-alias": "2.2.3",
+    "qunit": "2.24.1"
    },
   "keywords": [
+    "ecosystem:jquery",
+    "jquery-plugin",
     "jquery",
     "deferred",
     "reporter",
