@@ -10,10 +10,23 @@ QUnit.test( "Environment check", function( assert ) {
 	assert.ok( Array.prototype.push, "Array#push()" );
 } );
 
-QUnit[ globalThis.console ? "test" : "skip" ](
-"jQuery.Deferred.exceptionHook",
-function exceptionHookTest( assert ) {
+QUnit.test( "Choosing the patched API", function( assert ) {
+	assert.expect( 2 );
 
+	assert.strictEqual( typeof jQuery.Deferred.getErrorHook, "function",
+		"The modern API is always defined" );
+
+	if ( jQuery.fn.jquery.indexOf( "3." ) === 0 ) {
+		assert.strictEqual( typeof jQuery.Deferred.getStackHook, "function",
+			"The legacy API is defined in jQuery <4" );
+	} else {
+		assert.strictEqual( jQuery.Deferred.getStackHook, undefined,
+			"The legacy API is not defined in jQuery >=4" );
+	}
+} );
+
+QUnit.test( "jQuery.Deferred.exceptionHook",
+			function exceptionHookTest( assert ) {
 	assert.expect( 1 );
 
 	var done = assert.async(),
@@ -50,10 +63,8 @@ function exceptionHookTest( assert ) {
 	defer.resolve();
 } );
 
-QUnit[ globalThis.console ? "test" : "skip" ](
-"jQuery.Deferred.exceptionHook with stack hooks",
-function exceptionHookWithStack( assert ) {
-
+QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks",
+		function exceptionHookWithStack( assert ) {
 	assert.expect( 2 );
 
 	var done = assert.async(),
@@ -76,7 +87,6 @@ function exceptionHookWithStack( assert ) {
 		jQuery.cough_up_hairball();
 	} ).then( null, function( ) {
 		globalThis.console.warn = oldWarn;
-		delete jQuery.Deferred.getErrorHook;
 		done();
 	} );
 

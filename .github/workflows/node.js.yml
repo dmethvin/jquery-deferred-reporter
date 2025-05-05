@@ -1,26 +1,41 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches-ignore: "dependabot/**"
 
 permissions:
   contents: read # to fetch code (actions/checkout)
 
+env:
+  NODE_VERSION: 22.x
+
 jobs:
-  build:
+  node-test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.NODE_VERSION }}
-      uses: actions/setup-node@v3.6.0
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
       with:
-        node-version: 18.x
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
-    - name: Run tests
-      run: npm test
+    - name: Run lint
+      run: npm run lint
+
+    - name: Run Node.js tests
+      run: npm run test:node
