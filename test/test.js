@@ -13,16 +13,15 @@ QUnit.test( "Environment check", function( assert ) {
 QUnit.test( "Choosing the patched API", function( assert ) {
 	assert.expect( 2 );
 
-	if ( jQuery.fn.jquery.indexOf( "3.6." ) === 0 ) {
+	assert.strictEqual( typeof jQuery.Deferred.getErrorHook, "function",
+		"The modern API is always defined" );
+
+	if ( jQuery.fn.jquery.indexOf( "3." ) === 0 ) {
 		assert.strictEqual( typeof jQuery.Deferred.getStackHook, "function",
-			"The legacy API is defined" );
-		assert.strictEqual( jQuery.Deferred.getErrorHook, undefined,
-			"The modern API is not defined" );
+			"The legacy API is defined in jQuery <4" );
 	} else {
-		assert.strictEqual( typeof jQuery.Deferred.getErrorHook, "function",
-			"The modern API is defined" );
 		assert.strictEqual( jQuery.Deferred.getStackHook, undefined,
-			"The legacy API is not defined" );
+			"The legacy API is not defined in jQuery >=4" );
 	}
 } );
 
