@@ -25,9 +25,8 @@
 
 	jQuery.Deferred.getErrorHook = getErrorHook;
 
-	// Only assign to the older API in jQuery <4.
-	if ( jQuery.fn.jquery.indexOf( "4." ) !== 0 ) {
-	} else {
+	// Only assign to the older API in jQuery 3.x.
+	if ( jQuery.fn.jquery.indexOf( "3." ) === 0 ) {
 		jQuery.Deferred.getStackHook = jQuery.Deferred.getErrorHook;
 	}
 
